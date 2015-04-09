@@ -681,6 +681,36 @@ config BU52031NVX_POUCHDETECT
 	help
 	  depends on BU52031NVX
 
+config SAMSUNG_JACK
+	bool "3.5 PI EAR_JACK driver for Samsung devices"
+	depends on INPUT
+	default n
+	---help---
+	  This is 3.5 PI EAR_JACK driver for Samsung devices.
+
+config FSAXXXX_USBSW
+	bool "Fairchild FSAxxxx USB switch Driver"
+	depends on I2C
+	default n
+
+config SEC_MISC
+	bool "Samsung P series miscellaneous driver"
+	default n
+	---help---
+	  Samsung P series miscellaneous driver
+
+config SEC_DEBUG
+	bool "Samsung Debug Code"
+	default n
+	---help---
+	  Samsung debug code	
+
+config SEC_DUMP
+	bool "Samsung DUMP Code"
+	default n
+	---help---
+	  Samsung dump code		  
+
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
