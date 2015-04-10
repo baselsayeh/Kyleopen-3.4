@@ -1545,10 +1545,20 @@ int msm_rpc_write(struct msm_rpc_endpoint *ept, void *buffer, int count)
 	int first_pkt = 1;
 	uint32_t mid;
 	unsigned long flags;
+	
+	long oldnice = current->static_prio - 120;
+
+	set_user_nice(current, -15);
 
 	/* snoop the RPC packet and enforce permissions */
 
 	/* has to have at least the xid and type fields */
+
+	if (power_off_done) {
+		set_user_nice(current, oldnice);
+		return 0;
+	}
+
 	if (count < (sizeof(uint32_t) * 2)) {
 		printk(KERN_ERR "rr_write: rejecting runt packet\n");
 		return -EINVAL;
@@ -1673,6 +1683,9 @@ int msm_rpc_read(struct msm_rpc_endpoint *ept, void **buffer,
 	struct rr_fragment *frag, *next;
 	char *buf;
 	int rc;
+
+	if (power_off_done)
+		return 0;
 
 	rc = __msm_rpc_read(ept, &frag, user_len, timeout);
 	if (rc <= 0)

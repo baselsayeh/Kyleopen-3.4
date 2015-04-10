@@ -183,9 +183,19 @@ struct hs_cmd_data_type {
 static const uint32_t hs_key_map[] = {
 	KEY(HS_PWR_K, KEY_POWER),
 	KEY(HS_END_K, KEY_END),
+#if 0
 	KEY(HS_STEREO_HEADSET_K, SW_HEADPHONE_INSERT_W_MIC),
 	KEY(HS_HEADSET_HEADPHONE_K, SW_HEADPHONE_INSERT),
 	KEY(HS_HEADSET_MICROPHONE_K, SW_MICROPHONE_INSERT),
+#else
+	KEY(HS_HEADSET_HEADPHONE_K, SW_HEADPHONE_INSERT), 	/* 3pole headset */
+	KEY(HS_STEREO_HEADSET_K,
+	SW_HEADPHONE_INSERT_W_MIC),    /* 4pole headset */
+#ifdef RPC_JACK_WATERPROOF
+	KEY(HS_FOREIGN_SUBSTANCE_K,
+	SW_FOREIGN_SUBSTANCE_INSERT),    /* Foreign Substance insert */
+#endif
+#endif
 	KEY(HS_HEADSET_SWITCH_K, KEY_MEDIA),
 	KEY(HS_HEADSET_SWITCH_2_K, KEY_VOLUMEUP),
 	KEY(HS_HEADSET_SWITCH_3_K, KEY_VOLUMEDOWN),
@@ -223,6 +233,27 @@ struct msm_handset {
 static struct msm_rpc_client *rpc_client;
 static struct msm_handset *hs;
 
+extern struct class *sec_class;
+struct device *pwr_dev;
+static int key_count;
+
+static ssize_t keyshort_test(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	int count;
+	if(key_count) {
+		count = sprintf(buf, "PRESS\n");
+	}
+	else {
+		count = sprintf(buf, "RELEASE\n");
+	}
+
+	return count;
+}
+#if defined(CONFIG_MACH_KYLE)
+static DEVICE_ATTR(sec_power_key_pressed, 0664, keyshort_test, NULL);
+#else
+static DEVICE_ATTR(sec_pwrkey_pressed, 0664, keyshort_test, NULL);
+#endif
 static int hs_find_key(uint32_t hscode)
 {
 	int i, key;
