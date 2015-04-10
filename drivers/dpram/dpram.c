@@ -19,6 +19,7 @@
 #include <linux/delay.h>
 #include <linux/platform_device.h>
 #include <linux/mm.h>
+#include <linux/sched.h>
 
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -45,7 +46,7 @@
 
 #include "dpram.h"
 #include "../../arch/arm/mach-msm/smd_private.h"
-#include "../../arch/arm/mach-msm/proc_comm.h"
+#include "../../arch/arm/mach-msm/include/mach/proc_comm.h"
 
 #ifdef CONFIG_SEC_MISC
 #include <linux/sec_param.h>
