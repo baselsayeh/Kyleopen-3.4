@@ -564,6 +564,14 @@ config MACH_MSM7X27A_FFA
         help
           Support for the Qualcomm MSM7x27A FFA.
 
+config MACH_KYLE
+        depends on !MSM_STACKED_MEMORY
+	select DISABLE_HDMI_FB_CLEAR
+        default n
+        bool "MSM7x27A KYLE"
+        help
+          Support for the Qualcomm KYLE
+
 config MACH_MSM7625A_SURF
         depends on ARCH_MSM7X27A
         depends on !MSM_STACKED_MEMORY
