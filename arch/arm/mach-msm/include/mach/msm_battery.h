@@ -69,6 +69,7 @@ struct msm_charger_data {
 };
 
 struct msm_psy_batt_pdata {
+	struct msm_charger_data	*charger;
 	u32 voltage_max_design;
 	u32 voltage_min_design;
 	u32 voltage_fail_safe;

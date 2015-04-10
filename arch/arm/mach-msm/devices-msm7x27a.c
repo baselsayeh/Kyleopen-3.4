@@ -768,7 +768,8 @@ static uint8_t spm_pc_without_modem[] __initdata = {
 	0x4e, 0x4e, 0x4e, 0x4e,
 	0x2E, 0x0f,
 };
-
+//will cause compiling errors
+/*
 static struct msm_spm_seq_entry msm_spm_seq_list[] __initdata = {
 	[0] = {
 		.mode = MSM_SPM_MODE_CLOCK_GATING,
@@ -803,7 +804,7 @@ void __init msm8x25_spm_device_init(void)
 {
 	msm_spm_init(msm_spm_data, ARRAY_SIZE(msm_spm_data));
 }
-
+*/
 #define MDP_BASE		0xAA200000
 #define MIPI_DSI_HW_BASE	0xA1100000
 

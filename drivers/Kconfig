@@ -150,7 +150,7 @@ source "drivers/gud/Kconfig"
 
 source "drivers/coresight/Kconfig"
 
-source "drivers/sensors/Kconfig"
+source "drivers/sensors_kyleopen/Kconfig"
 
 if MACH_ANCORA
 source "drivers/dpram/Kconfig"

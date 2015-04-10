@@ -460,11 +460,50 @@ static struct i2c_board_info i2c_camera_devices[] = {
 };
 #else
 static uint32_t camera_off_gpio_table[] = {
-	GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+#ifdef CONFIG_MACH_AMAZING_CDMA
+	GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_4MA),
+	GPIO_CFG(96, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(85, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(107, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+
+#elif CONFIG_MACH_KYLE
+	GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_6MA),
+	GPIO_CFG(4, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(18, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(49, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(58, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(85, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(86, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(96, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(98, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(107, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+#else
+	GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_6MA),
+#endif
 };
 
 static uint32_t camera_on_gpio_table[] = {
-	GPIO_CFG(15, 1, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+#ifdef CONFIG_MACH_AMAZING_CDMA
+	GPIO_CFG(15, 1, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_4MA),
+	GPIO_CFG(96, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(85, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(107, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+#elif CONFIG_MACH_KYLE
+	GPIO_CFG(15, 1, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_6MA),
+	GPIO_CFG(4, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(18, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(49, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(58, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(85, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(86, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(96, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(98, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+	GPIO_CFG(107, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_2MA),
+#elif CONFIG_MACH_AMAZING
+	GPIO_CFG(15, 0, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_6MA),
+#else
+	GPIO_CFG(15, 1, GPIO_CFG_OUTPUT, GPIO_CFG_PULL_DOWN, GPIO_CFG_6MA),
+#endif
 };
 
 #ifdef CONFIG_MSM_CAMERA_FLASH
@@ -771,7 +810,32 @@ static struct platform_device msm_camera_sensor_s5k4e1 = {
 	},
 };
 #endif
+#if defined(CONFIG_S5K4ECGX) || defined(CONFIG_S5K4ECGX_KYLE)
+static struct msm_camera_sensor_platform_info s5k4ecgx_sensor_7627a_info = {
+	.mount_angle = 90
+};
 
+static struct msm_camera_sensor_flash_data flash_s5k4ecgx = {
+	.flash_type             = MSM_CAMERA_FLASH_LED,
+};
+
+static struct msm_camera_sensor_info msm_camera_sensor_s5k4ecgx_data = {
+	.sensor_name    = "s5k4ecgx",
+	.sensor_reset_enable = 0,
+	.vcm_enable             = 0,
+	.pdata                  = &msm_camera_device_data_rear,
+	.flash_data             = &flash_s5k4ecgx,
+	.sensor_platform_info   = &s5k4ecgx_sensor_7627a_info,
+	.csi_if                 = 1
+};
+
+static struct platform_device msm_camera_sensor_s5k4ecgx = {
+	.name   = "msm_camera_s5k4ecgx",
+	.dev    = {
+		.platform_data = &msm_camera_sensor_s5k4ecgx_data,
+	},
+};
+#endif
 #ifdef CONFIG_IMX072
 static struct msm_camera_sensor_platform_info imx072_sensor_7627a_info = {
 	.mount_angle = 90
@@ -964,6 +1028,11 @@ static struct i2c_board_info i2c_camera_devices[] = {
 		I2C_BOARD_INFO("mt9e013", 0x6C >> 2),
 	},
 	#endif
+	#if defined(CONFIG_S5K4ECGX) || defined(CONFIG_S5K4ECGX_KYLE)
+	{
+		I2C_BOARD_INFO("s5k4ecgx", 0xAC >> 1),
+	},
+	#endif
 	{
 		I2C_BOARD_INFO("sc628a", 0x6E),
 	},
@@ -1010,6 +1079,9 @@ static struct platform_device *camera_devices_msm[] __initdata = {
 #endif
 #ifdef CONFIG_MT9E013
 	&msm_camera_sensor_mt9e013,
+#endif
+#if defined(CONFIG_S5K4ECGX) || defined(CONFIG_S5K4ECGX_KYLE)
+	&msm_camera_sensor_s5k4ecgx,
 #endif
 };
 
@@ -1171,7 +1243,7 @@ void __init msm7627a_camera_init(void)
 #endif
 
 	pr_debug("msm7627a_camera_init Entered\n");
-
+#ifdef CONFIG_OV5640
 	if (machine_is_msm7627a_qrd3() || machine_is_msm8625_qrd7()) {
 		ov7692_cam_req_gpio[0].gpio =
 			GPIO_SKU7_CAM_VGA_SHDN;
@@ -1183,8 +1255,10 @@ void __init msm7627a_camera_init(void)
 		msm_camera_sensor_ov5647_data.sensor_reset =
 			GPIO_SKU7_CAM_5MP_CAMIF_RESET;
 	}
+#endif
 
 	/* LCD and camera power (VREG & LDO) init */
+#ifdef CONFIG_MACH_MSM7627A_QRD3
 	if (machine_is_msm7627a_evb() || machine_is_msm8625_evb()
 			|| machine_is_msm8625_evt()
 			|| machine_is_msm7627a_qrd3()
@@ -1194,12 +1268,13 @@ void __init msm7627a_camera_init(void)
 #endif
 		evb_camera_gpio_cfg();
 	}
-
+#endif
 #ifndef CONFIG_MSM_CAMERA_V4L2
 	if (machine_is_msm7627a_qrd1()) {
 		qrd1_camera_gpio_cfg();
 		platform_add_devices(camera_devices_qrd,
 				ARRAY_SIZE(camera_devices_qrd));
+#elif defined CONFIG_MACH_MSM7627A_EVB
 	} else if (machine_is_msm7627a_evb()
 			|| machine_is_msm8625_evb()
 			|| machine_is_msm8625_evt()
@@ -1207,9 +1282,11 @@ void __init msm7627a_camera_init(void)
 			|| machine_is_msm8625_qrd7()) {
 		platform_add_devices(camera_devices_evb,
 				ARRAY_SIZE(camera_devices_evb));
-	} else if (machine_is_msm7627a_qrd3())
+#elif defined CONFIG_MACH_MSM7627A_QRD3
+	} else if (machine_is_msm7627a_qrd3()) {
 		return;
-	else
+#else
+	} else
 		platform_add_devices(camera_devices_msm,
 				ARRAY_SIZE(camera_devices_msm));
 #endif
@@ -1243,6 +1320,7 @@ void __init msm7627a_camera_init(void)
 		i2c_register_board_info(MSM_GSBI0_QUP_I2C_BUS_ID,
 				i2c_camera_devices_qrd,
 				ARRAY_SIZE(i2c_camera_devices_qrd));
+#ifdef CONFIG_MACH_MSM7627A_QRD3
 	} else if (machine_is_msm7627a_evb()
 			|| machine_is_msm8625_evb()
 			|| machine_is_msm8625_evt()
@@ -1252,6 +1330,7 @@ void __init msm7627a_camera_init(void)
 		i2c_register_board_info(MSM_GSBI0_QUP_I2C_BUS_ID,
 				i2c_camera_devices_evb,
 				ARRAY_SIZE(i2c_camera_devices_evb));
+#endif
 	} else
 #endif
 		pr_debug("i2c_register_board_info\n");

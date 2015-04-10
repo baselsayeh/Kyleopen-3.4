@@ -1277,12 +1277,14 @@ static void __init msm7x27a_add_platform_devices(void)
 static void __init msm7x27a_uartdm_config(void)
 {
 	msm7x27a_cfg_uart2dm_serial();
+#ifdef CONFIG_SERIAL_MSM_HS
 	msm_uart_dm1_pdata.wakeup_irq = gpio_to_irq(UART1DM_RX_GPIO);
 	if (cpu_is_msm8625())
 		msm8625_device_uart_dm1.dev.platform_data =
 			&msm_uart_dm1_pdata;
 	else
 		msm_device_uart_dm1.dev.platform_data = &msm_uart_dm1_pdata;
+#endif
 }
 
 static void __init msm7x27a_otg_gadget(void)
@@ -1309,7 +1311,7 @@ static void __init msm7x27a_pm_init(void)
 		msm_pm_set_platform_data(msm8625_pm_data,
 				ARRAY_SIZE(msm8625_pm_data));
 		BUG_ON(msm_pm_boot_init(&msm_pm_8625_boot_pdata));
-		msm8x25_spm_device_init();
+		//msm8x25_spm_device_init();
 		msm_pm_register_cpr_ops();
 	} else {
 		msm_pm_set_platform_data(msm7x27a_pm_data,
@@ -1334,22 +1336,31 @@ static void __init msm7x2x_init(void)
 	msm7x27a_init_ebi2();
 	msm7x27a_uartdm_config();
 
+#ifdef CONFIG_USB_MSM_OTG_72K
 	msm7x27a_otg_gadget();
+#endif
+
 	msm7x27a_cfg_smsc911x();
 
 	msm7x27a_add_footswitch_devices();
 	msm7x27a_add_platform_devices();
 	/* Ensure ar6000pm device is registered before MMC/SDC */
 	msm7x27a_init_ar6000pm();
+#ifdef CONFIG_MMC_MSM
 	msm7627a_init_mmc();
+#endif
 	msm_fb_add_devices();
+#ifdef CONFIG_USB_EHCI_MSM_72K
 	msm7x2x_init_host();
+#endif
 	msm7x27a_pm_init();
 	register_i2c_devices();
 #if defined(CONFIG_BT) && defined(CONFIG_MARIMBA_CORE)
 	msm7627a_bt_power_init();
 #endif
+#if defined(CONFIG_MSM_CAMERA)
 	msm7627a_camera_init();
+#endif
 	msm7627a_add_io_devices();
 	/*7x25a kgsl initializations*/
 	msm7x25a_kgsl_3d0_init();

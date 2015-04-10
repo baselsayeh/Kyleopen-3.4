@@ -82,6 +82,10 @@ struct gpio_event_matrix_info {
 	unsigned int *output_gpios;
 	unsigned int ninputs;
 	unsigned int noutputs;
+#if defined(CONFIG_MACH_KYLE) || defined(CONFIG_MACH_AMAZING)
+	unsigned int *wakeup_gpios;
+	unsigned int nwakeups;
+#endif
 	/* time to wait before reading inputs after driving each output */
 	ktime_t settle_time;
 	/* time to wait before scanning the keypad a second time */

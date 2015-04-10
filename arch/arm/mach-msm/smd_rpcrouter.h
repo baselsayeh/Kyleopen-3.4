@@ -256,6 +256,7 @@ void get_requesting_client(struct msm_rpc_endpoint *ept, uint32_t xid,
 extern dev_t msm_rpcrouter_devno;
 extern struct completion rpc_remote_router_up;
 extern struct class *msm_rpcrouter_class;
+extern int power_off_done;
 
 void xdr_init(struct msm_rpc_xdr *xdr);
 void xdr_init_input(struct msm_rpc_xdr *xdr, void *buf, uint32_t size);
