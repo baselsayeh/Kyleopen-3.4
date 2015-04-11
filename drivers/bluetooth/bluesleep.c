@@ -226,7 +226,7 @@ static void bluesleep_sleep_work(struct work_struct *work)
 		#ifdef CONFIG_BT_CSR_7820
 		&& bt_enter_sleep_mode_cnt > 2
 		#endif
-		{
+		) {
 			BT_DBG("going to sleep...");
 			#ifdef CONFIG_BT_CSR_7820
 			bt_enter_sleep_mode_cnt = 0;
@@ -241,7 +241,6 @@ static void bluesleep_sleep_work(struct work_struct *work)
 			wake_lock_timeout(&bsi->wake_lock, HZ / 2);
 			#endif
 		} else {
-
 		  mod_timer(&tx_timer, jiffies + (TX_TIMER_INTERVAL * HZ));
 			return;
 		}
@@ -759,6 +758,7 @@ static int __init bluesleep_probe(struct platform_device *pdev)
 	ret = gpio_direction_output(bsi->ext_wake, 0);
 	if (ret)
 		goto free_bt_ext_wake;
+	#endif
 
 	bsi->host_wake_irq = platform_get_irq_byname(pdev, "host_wake");
 	if (bsi->host_wake_irq < 0) {

@@ -785,11 +785,16 @@ void __init msm7627a_add_io_devices(void)
 				atmel_ts_i2c_info,
 				ARRAY_SIZE(atmel_ts_i2c_info));
 	/* keypad */
+#if defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C) || \
+defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C_MODULE)
 	platform_device_register(&kp_pdev);
+#endif
 
 	/* headset */
 	platform_device_register(&hs_pdev);
 
+#if defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C) || \
+defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C_MODULE)
 	/* LED: configure it as a pdm function */
 	if (gpio_tlmm_config(GPIO_CFG(LED_GPIO_PDM, 3,
 				GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL,
@@ -798,6 +803,7 @@ void __init msm7627a_add_io_devices(void)
 			__func__, LED_GPIO_PDM);
 	else
 		platform_device_register(&led_pdev);
+#endif
 
 	/* Vibrator */
 	if (machine_is_msm7x27a_ffa() || machine_is_msm7625a_ffa()
@@ -808,13 +814,17 @@ void __init msm7627a_add_io_devices(void)
 void __init qrd7627a_add_io_devices(void)
 {
 	int rc;
-
 	/* touchscreen */
 	if (machine_is_msm7627a_qrd1()) {
+		#if defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C) || \
+		defined(CONFIG_TOUCHSCREEN_SYNAPTICS_RMI4_I2C_MODULE)
 		i2c_register_board_info(MSM_GSBI1_QUP_I2C_BUS_ID,
 					synaptic_i2c_clearpad3k,
 					ARRAY_SIZE(synaptic_i2c_clearpad3k));
-	} else if (machine_is_msm7627a_evb() || machine_is_msm8625_evb() ||
+		#endif
+	}
+#ifdef CONFIG_MACH_MSM7627A_EVB
+	else if (machine_is_msm7627a_evb() || machine_is_msm8625_evb() ||
 			machine_is_msm8625_evt()) {
 		/* Use configuration data for EVT */
 		if (machine_is_msm8625_evt()) {
@@ -844,10 +854,13 @@ void __init qrd7627a_add_io_devices(void)
 		i2c_register_board_info(MSM_GSBI1_QUP_I2C_BUS_ID,
 					mxt_device_info,
 					ARRAY_SIZE(mxt_device_info));
-	} else if (machine_is_msm7627a_qrd3() || machine_is_msm8625_qrd7()) {
+	}
+#endif
+#ifdef CONFIG_MACH_MSM7627A_QRD3
+	else if (machine_is_msm7627a_qrd3() || machine_is_msm8625_qrd7()) {
 		ft5x06_touchpad_setup();
 	}
-
+#endif
 	/* headset */
 	platform_device_register(&hs_pdev);
 
@@ -857,19 +870,25 @@ void __init qrd7627a_add_io_devices(void)
 #endif
 
 	/* keypad */
+#ifdef CONFIG_ARCH_MSM8625
 	if (machine_is_msm8625_evt())
 		kp_matrix_info_8625.keymap = keymap_8625_evt;
-
+#endif
+#ifdef CONFIG_MACH_MSM7627A_EVB
 	if (machine_is_msm7627a_evb() || machine_is_msm8625_evb() ||
 			machine_is_msm8625_evt())
 		platform_device_register(&kp_pdev_8625);
+#endif
+#ifdef CONFIG_MACH_MSM7627A_QRD3
 	else if (machine_is_msm7627a_qrd3() || machine_is_msm8625_qrd7())
 		platform_device_register(&kp_pdev_sku3);
-
+#endif
+#ifdef CONFIG_MACH_MSM7627A_EVB
 	/* leds */
 	if (machine_is_msm7627a_evb() || machine_is_msm8625_evb() ||
 						machine_is_msm8625_evt()) {
 		platform_device_register(&pmic_mpp_leds_pdev);
 		platform_device_register(&tricolor_leds_pdev);
 	}
+#endif
 }
