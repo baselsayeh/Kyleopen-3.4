@@ -12,6 +12,7 @@
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 #include <linux/sec_param.h>
+#include <linux/module.h>
 
 #define PARAM_RD	0
 #define PARAM_WR	1
